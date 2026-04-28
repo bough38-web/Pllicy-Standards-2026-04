@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>해지방어 플랫폼 현장 교육 가이드 & 매뉴얼</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        /* Sticky Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 15px 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--primary);
+            background: #eff6ff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.2s;
+            border: 1px solid #bfdbfe;
+        }
+        nav a:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary);
+        }
+        
+        h2 {
+            font-size: 28px;
+            margin-top: 0;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h3 {
+            font-size: 20px;
+            color: var(--primary);
+            margin-top: 30px;
+        }
+        
+        .box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Accordion for scripts */
+        .script-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .script-header {
+            background: #f8fafc;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .script-header:hover {
+            background: #f1f5f9;
+        }
+        .script-badges {
+            display: flex;
+            gap: 10px;
+        }
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: normal;
+        }
+        .badge.type {
+            background: #475569;
+        }
+        .script-content {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+        .script-content.active {
+            display: block;
+        }
+        .script-text {
+            background: #eff6ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            font-size: 18px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+        
+        .chatbot-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 16px;
+            font-size: 16px;
+        }
+        .chat-ai {
+            background: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .chat-user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#manual">📖 사용 매뉴얼</a>
+        <a href="#chatbot">🤖 챗봇 기능 안내</a>
+        <a href="#scripts">🛡️ 핵심 방어 스크립트 (21종)</a>
+    </nav>
+
+    <div class="container">
+        <div style="text-align:center; padding: 40px 0;">
+            <h1 style="font-size:36px; margin:0;">고객 해지방어 플랫폼 완벽 활용 가이드</h1>
+            <p style="color:var(--text-muted); font-size:18px;">영업 사원 및 상담원을 위한 실전 현장 매뉴얼</p>
+        </div>
+
+        <!-- 1. 사용 매뉴얼 -->
+        <section id="manual">
+            <h2>📖 플랫폼 사용 매뉴얼</h2>
+            <div class="box">
+                <h3>1. 시스템 접속 및 로그인</h3>
+                <p>본 플랫폼은 철저한 사내 자산 보호를 위해 보안 로그인을 거쳐야 합니다.</p>
+                <ul>
+                    <li>접속 주소(URL) 진입 시 <b>보안 로그인</b> 화면 노출</li>
+                    <li>지정된 <b>공통 암호 (3867)</b> 입력 후 <code>Enter</code> 입력</li>
+                    <li>모바일/태블릿 접속 시 브라우저 <b>'홈 화면에 추가(즐겨찾기)'</b> 권장</li>
+                </ul>
+            </div>
+            <div class="box">
+                <h3>2. 빠른 검색 및 음성 인식</h3>
+                <p>현장에서 즉각적인 대응이 필요할 때 활용하세요.</p>
+                <ul>
+                    <li><b>키워드 검색:</b> "비싸다", "위약금", "타사" 등 핵심 키워드만 입력</li>
+                    <li><b>음성 검색(🎤):</b> 검색창 옆 마이크 아이콘을 누르고 상황을 말하면 즉시 스크립트 검색 (예: "경쟁사로 넘어간대")</li>
+                </ul>
+            </div>
+            <div class="box">
+                <h3>3. Top 10 전문가 기법</h3>
+                <p>현장에서 가장 성공률이 높았던 10개의 핵심 스크립트만 필터링하여 볼 수 있습니다.</p>
+                <ul>
+                    <li>리스트 상단의 <code>👑 전문가 Top 10 기법</code> 스위치를 켜면 즉시 필터링됩니다.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2. 챗봇 기능 -->
+        <section id="chatbot">
+            <h2>🤖 AI 챗봇 (어시스턴트) 기능 안내</h2>
+            <p>플랫폼 우측 하단에 떠 있는 <b>메시지 아이콘</b>을 클릭하면 실시간 AI 어시스턴트와 상담할 수 있습니다.</p>
+            
+            <div class="box">
+                <h3>💡 챗봇 활용 시나리오</h3>
+                <p>스크립트 목록에 없는 특수한 상황이나, 즉각적인 협상 논리가 필요할 때 챗봇에게 상황을 설명하세요.</p>
+                
+                <div class="chatbot-demo">
+                    <div class="chat-bubble chat-ai">
+                        안녕하세요! 고객 해지방어 전담 AI 어시스턴트입니다.<br>어떤 상황의 고객을 응대하고 계신가요?
+                    </div>
+                    <div class="chat-bubble chat-user">
+                        고객이 "장비가 너무 오래돼서 꼴도 보기 싫다"며 당장 해지해 달라고 화를 냅니다. 어떻게 말해야 하죠?
+                    </div>
+                    <div class="chat-bubble chat-ai">
+                        <b>[대응 가이드]</b><br>
+                        "고객님, 오랫동안 저희 장비를 사용하시며 불편을 겪으셨다니 정말 죄송합니다. 꼴도 보기 싫으실 만큼 답답하셨을 마음 충분히 이해합니다. 제가 지금 당장 최신형 장비로 무상 교체가 가능한지 확인해 드리겠습니다. 기기만 새것으로 바꿔도 훨씬 쾌적하실 겁니다. 잠시만 확인 도와드려도 될까요?"<br><br>
+                        *핵심: 우선 철저히 공감한 뒤, '최신 장비 무상 교체' 카드로 시선을 돌리세요.*
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 핵심 방어 스크립트 -->
+        <section id="scripts">
+            <h2>🛡️ 핵심 방어 스크립트 (총 21종)</h2>
+            <p>아래 각 상황을 클릭하면 현장에서 바로 읽을 수 있는 방어 대본이 나타납니다.</p>
+            
+            <div id="script-list">
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S001')">
+                        <span>[가격 불만] 월 이용료가 비싸다고 해지 요청</span>
+                        <div class="script-badges">
+                            <span class="badge type">가격민감형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S001">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 해지방어를 최우선으로 하며, 리텐션P값을 활용해 고객의 가격 부담을 낮춘다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>비용 부담을 먼저 인정한다</li><li>불편 요소를 확인하며 해지방어의 필요성을 환기한다</li><li>리텐션P값 할인을 최우선 해결책으로 제시한다</li><li>단순 요금 인하나 위약금 면제는 후순위 보류로 안내한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 매월 비용이 부담스럽게 느껴지실 수 있습니다. 다만 보안 공백이 생기면 더 큰 손해로 이어질 수 있으니 해지방어를 최우선으로 생각해주시면 좋겠습니다. 저희가 장기 고객님을 위해 마련한 특별 '리텐션P값 할인' 제도를 적용해드리면 요금 부담을 크게 낮추시면서 안전을 유지하실 수 있습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>리텐션P값 특별 할인 (최우선)</li><li>장기 이용 고객 혜택 결합</li><li>단순 면제/인하는 최후순위 검토</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>면제나 요금 인하부터 먼저 꺼내지 않기</li><li>리텐션P값 할인 카드를 활용해 해지방어에 집중</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S002')">
+                        <span>[타사 비교] 타사가 더 저렴하다고 주장</span>
+                        <div class="script-badges">
+                            <span class="badge type">비교형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S002">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 단순 가격 비교에서 보안 품질 비교로 전환한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>타사 조건을 부정하지 않는다</li><li>출동 품질, 설치 범위, 사후관리 차이를 질문한다</li><li>현재 서비스의 안정성을 재확인한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 더 저렴한 조건을 제안받으셨다면 당연히 비교해보실 수 있습니다. 다만 보안 서비스는 월 요금뿐 아니라 출동 체계, 장비 상태, 사후관리까지 함께 보셔야 합니다. 혹시 타사 조건에서 출동 방식과 장비 교체 비용까지 안내받으셨을까요?"
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>타사 조건 비교 체크리스트</li><li>현재 장비 상태 점검</li><li>맞춤 조건 재설계</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>타사 비방 금지</li><li>가격만으로 맞대응하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S003')">
+                        <span>[서비스 불만] 출동이나 고객응대 불만으로 해지 요청</span>
+                        <div class="script-badges">
+                            <span class="badge type">불만누적형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S003">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 해지 의사보다 불만 해결을 우선한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>불편 경험을 구체적으로 묻는다</li><li>책임 회피 없이 사과한다</li><li>개선 조치를 명확히 제시한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 이용 중 불편을 드렸다면 먼저 죄송합니다. 해지 접수 전에 어떤 부분이 가장 불편하셨는지 정확히 확인해서 개선 가능 여부를 바로 점검하겠습니다. 같은 문제가 반복되지 않도록 담당 조치까지 연결해드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>담당자 재배정</li><li>서비스 품질 점검</li><li>재발방지 조치 안내</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>변명하거나 고객 탓하지 않기</li><li>감정이 가라앉기 전 혜택만 제시하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S004')">
+                        <span>[폐업/이전] 매장 폐업 또는 이전으로 해지 요청</span>
+                        <div class="script-badges">
+                            <span class="badge type">상황변화형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S004">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 완전 해지 대신 이전 설치나 사용제한 조치를 동반한 일시정지를 확인한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>폐업인지 이전인지 구분한다</li><li>폐업인 경우 장비전원 off 및 DVR/NVR 저장장치 off 등 사용제한 조치를 적용한 일시정지를 제안한다</li><li>새 장소로 이전하는 경우 이전 설치를 제안한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 매장 상황이 바뀌셨군요. 혹시 완전 폐업이신가요, 아니면 다른 장소로 이전 예정이신가요? 완전 폐업으로 당장 운영을 안 하시는 거라면, 해지 위약금을 무시는 것보다 '일시정지'를 추천해 드립니다. 일시정지 기간 동안에는 비용이 청구되지 않도록 장비 전원과 카메라 저장장치(DVR/NVR)의 전원을 오프(off)하여 안전하게 사용제한 조치를 해두겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>일시정지 (장비전원 및 저장장치 off 사용제한 조치 적용)</li><li>이전 설치 상담</li><li>새 사업장 보안 설계</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>무조건 해지 처리로 끝내지 않기</li><li>상황 확인 없이 위약금부터 말하지 않기</li><li>일시정지 시 장비 전원 off 조치가 필수임을 명확히 안내하기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S005')">
+                        <span>[계약/위약금] 위약금 때문에 화가 난 고객</span>
+                        <div class="script-badges">
+                            <span class="badge type">계약민감형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S005">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 규정 설명보다 선택지를 먼저 제시한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>고객 감정을 인정한다</li><li>계약 내용을 쉽게 설명한다</li><li>부담을 줄일 수 있는 대안을 찾는다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 예상하지 못한 위약금 안내를 받으시면 당연히 부담스럽고 불편하실 수 있습니다. 먼저 계약 기간과 남은 기간을 정확히 확인한 뒤, 고객님 부담을 줄일 수 있는 방법이 있는지 같이 확인해드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>잔여기간 확인</li><li>조건 변경 검토</li><li>승계 가능성 검토</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>규정만 반복하지 않기</li><li>강압적으로 들리는 표현 금지</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S006')">
+                        <span>[단순 변심] 그냥 필요 없다고 말함</span>
+                        <div class="script-badges">
+                            <span class="badge type">무관심형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S006">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 현재 위험 인식과 최소 유지 필요성을 환기한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>사용 빈도와 위험 노출을 확인한다</li><li>해지 후 공백 리스크를 설명한다</li><li>가벼운 유지 옵션을 제안한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 최근 특별한 사고가 없으면 필요성이 낮게 느껴지실 수 있습니다. 다만 보안 서비스는 문제가 생긴 뒤보다 문제가 생기기 전 유지하는 의미가 큽니다. 현재 환경에서 꼭 필요한 범위만 남기는 방식도 함께 검토해보겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>기본형 전환</li><li>서비스 범위 축소</li><li>무상 보안 점검</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>겁주는 말투 금지</li><li>고객 판단을 무시하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S007')">
+                        <span>[가족/공동결정] 가족이나 공동대표가 해지하자고 함</span>
+                        <div class="script-badges">
+                            <span class="badge type">대리결정형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S007">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 최종 의사결정자와 다시 논의할 근거를 제공한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>누가 결정에 영향이 있는지 확인한다</li><li>비용과 안전 자료를 정리해준다</li><li>재상담 일정을 잡는다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 가족분이나 공동대표님 의견도 중요하실 것 같습니다. 제가 현재 이용 조건과 해지 시 달라지는 점을 간단히 정리해드리면 함께 검토하시기 편하실 겁니다. 확인 후 다시 결정하셔도 늦지 않습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>비교 안내 자료</li><li>재상담 예약</li><li>조건 요약 전달</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>결정권자를 무시하지 않기</li><li>즉석 결정을 강요하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S008')">
+                        <span>[장비 불만] 장비가 오래됐다고 불만</span>
+                        <div class="script-badges">
+                            <span class="badge type">품질중시형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S008">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 장비 점검과 교체 가능성을 통해 유지 명분을 만든다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>장비 불편 증상을 구체화한다</li><li>무상/유상 점검 기준을 안내한다</li><li>개선 후 유지 제안</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 장비가 오래되었다고 느끼셨다면 실제 작동 상태를 점검해보는 것이 먼저입니다. 센서, 통신, 경보 상태를 확인한 뒤 필요한 조치나 교체 가능 여부를 안내드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>장비 점검</li><li>센서 교체 검토</li><li>설치 환경 재진단</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>장비 문제를 대수롭지 않게 말하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S009')">
+                        <span>[출동 불만] 출동이 늦었다고 불만</span>
+                        <div class="script-badges">
+                            <span class="badge type">안전민감형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S009">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 사실 확인과 개선 약속으로 신뢰를 회복한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>출동 이력 확인</li><li>고객 체감 불만 인정</li><li>개선 방안 연결</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 출동 지연으로 느끼셨다면 보안 서비스에서 가장 중요한 신뢰가 흔들리셨을 것 같습니다. 해당 이력을 확인하고, 같은 상황이 반복되지 않도록 관제와 출동 기준을 다시 점검하겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>출동 이력 확인</li><li>관제 프로세스 점검</li><li>담당자 설명</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>기록상 문제없다는 말만 반복하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S010')">
+                        <span>[휴업] 임시 휴업으로 해지 요청</span>
+                        <div class="script-badges">
+                            <span class="badge type">상황변화형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S010">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 해지 대신 일시정지 또는 최소 유지안 제시</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>휴업 기간 확인</li><li>재오픈 계획 확인</li><li>일시정지와 최소 유지 비교</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 임시 휴업이라면 바로 해지하시기보다 휴업 기간 동안 비용 부담을 줄이는 방법을 먼저 확인해보시는 게 좋습니다. 재오픈 때 재설치 비용이나 보안 공백이 생길 수 있습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>일시정지</li><li>최소 요금제</li><li>재개통 예약</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>휴업 고객에게 장기 약정만 강조하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S011')">
+                        <span>[불신] 영업사원 말을 믿지 못함</span>
+                        <div class="script-badges">
+                            <span class="badge type">경계형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S011">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 말보다 근거와 절차로 신뢰를 만든다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>과장 표현을 줄인다</li><li>확인 가능한 기준을 제시한다</li><li>문자/자료로 남긴다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 중요한 결정이기 때문에 신중하게 보시는 게 맞습니다. 제가 말씀드리는 내용은 확인 가능한 조건 위주로 정리해서 안내드리겠습니다. 비교 후 결정하셔도 됩니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>조건 문자 발송</li><li>계약 내용 요약</li><li>비교표 제공</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>무조건 된다는 표현 금지</li><li>압박성 마감 표현 주의</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S012')">
+                        <span>[강경 해지] 지금 당장 해지하겠다고 강하게 말함</span>
+                        <div class="script-badges">
+                            <span class="badge type">강경형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S012">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 감정을 낮추고 최소 확인 절차를 확보한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>말을 끊지 않는다</li><li>해지 의사를 존중한다</li><li>마지막 확인 질문을 한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 해지 의사가 강하신 점 이해했습니다. 바로 절차 안내드리기 전에, 혹시 해지 결정에 가장 크게 영향을 준 부분이 비용인지 서비스인지 한 가지만 확인해도 괜찮을까요? 그 부분에 따라 고객님께 손해가 적은 방법을 안내드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>해지 전 손익 비교</li><li>최종 조건 확인</li><li>담당자 긴급 상담</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>논쟁 금지</li><li>고객을 설득 대상으로만 보지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S013')">
+                        <span>[혜택 요구] 혜택 없으면 해지한다고 함</span>
+                        <div class="script-badges">
+                            <span class="badge type">협상형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S013">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 혜택보다 조건과 기준을 관리한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>요구를 인정한다</li><li>가능 범위를 확인한다고 말한다</li><li>혜택의 조건을 명확히 한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 장기 이용 고객으로서 더 나은 조건을 원하시는 점 이해합니다. 제가 임의로 약속드리기보다 적용 가능한 혜택과 조건을 확인해서 가장 유리한 안으로 안내드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>장기 고객 혜택</li><li>재약정 조건</li><li>서비스 추가 지원</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>권한 없는 약속 금지</li><li>혜택 남발 금지</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S014')">
+                        <span>[무인매장] 무인매장인데 비용 때문에 해지 고민</span>
+                        <div class="script-badges">
+                            <span class="badge type">위험인식형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S014">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 무인 환경의 리스크를 구체화한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>운영 시간과 취약 시간 확인</li><li>도난/침입 리스크 설명</li><li>최소 보안 유지 제안</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 무인매장은 사람이 상주하지 않는 시간이 길어 보안 공백이 더 크게 발생할 수 있습니다. 전체 서비스를 유지하기 부담되시면 취약 시간대 중심으로 꼭 필요한 보안만 남기는 방식도 검토해보겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>취약 시간 진단</li><li>핵심 구역 중심 조정</li><li>CCTV/센서 점검</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>공포 마케팅처럼 들리지 않게 주의</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S015')">
+                        <span>[소상공인 부담] 매출 감소 및 경제적 사정으로 인한 비용 부담</span>
+                        <div class="script-badges">
+                            <span class="badge type">생계형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S015">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 단순 해지 대신 리텐션P값을 활용한 할인을 적용해 어떻게든 유지를 이끌어낸다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>경영상 어려움 및 경제적 사정 깊이 공감</li><li>무조건적인 해지를 막기 위한 리텐션P값 할인율 계산</li><li>면제/인하는 후순위로 미루고 리텐션 할인안으로 설득</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 최근 경제적 사정과 매출 감소로 마음고생이 많으신 점 깊이 공감합니다. 이럴 때일수록 매장의 안전이 더 중요합니다. 저희가 고객님의 부담을 덜어드리기 위해 '리텐션P값 특별 할인'을 최대한도 수준으로 적용해드리겠습니다. 무작정 해지하시기보다 이 제도를 활용해 부담 없이 보안을 유지해보시는 것이 어떨까요?"
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>최대치 리텐션P값 할인 (최우선)</li><li>필수 요금제 재설계</li><li>면제 및 감면은 2차 방어선으로 활용</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>매출 이야기를 불필요하게 묻지 않기</li><li>해지 처리를 쉽게 수락하지 않기 (방어 최우선)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S016')">
+                        <span>[장기고객] 오래 썼지만 혜택이 없다고 느낌</span>
+                        <div class="script-badges">
+                            <span class="badge type">관계중시형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S016">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 인정과 특별 관리 느낌을 준다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>장기 이용에 감사 표현</li><li>혜택 누락 여부 확인</li><li>전용 조건 제안</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 오랫동안 이용해주셨는데 충분한 혜택을 못 느끼셨다면 저희가 더 챙겨드렸어야 합니다. 장기 고객 기준으로 적용 가능한 조건과 점검 혜택을 다시 확인해드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>장기고객 혜택</li><li>무상 점검</li><li>전담 상담</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>기존 고객 역차별 느낌 방치 금지</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S017')">
+                        <span>[이용 빈도 낮음] 경보가 거의 울리지 않아 필요 없다고 함</span>
+                        <div class="script-badges">
+                            <span class="badge type">합리형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S017">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 사고가 없는 상태 자체가 서비스 가치임을 설명한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>사고 없음의 긍정 가치 설명</li><li>예방 기능 강조</li><li>비용 대비 리스크 비교</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 경보가 자주 울리지 않았다는 것은 오히려 안정적으로 관리되고 있다는 의미일 수 있습니다. 보안은 문제가 생겼을 때보다 문제가 생기지 않게 하는 예방 가치가 큽니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>보안 리포트 제공</li><li>서비스 범위 점검</li><li>기본 유지안</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>고객의 합리적 판단을 부정하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S018')">
+                        <span>[계약 만료] 계약 만료 시점에 해지 검토</span>
+                        <div class="script-badges">
+                            <span class="badge type">기회탐색형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S018">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 재약정 혜택과 서비스 재설계를 제안한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>만료 시점 확인</li><li>현재 불만과 니즈 재진단</li><li>재약정 조건 안내</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 계약 만료 시점이면 조건을 다시 비교해보시는 게 자연스럽습니다. 이번 기회에 현재 매장 환경에 맞게 보안 범위와 요금 조건을 다시 설계해드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>재약정 혜택</li><li>요금 재설계</li><li>장비 점검</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>만료 고객을 당연히 유지된다고 생각하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S019')">
+                        <span>[불필요 장비] 쓰지 않는 기능이 많다고 함</span>
+                        <div class="script-badges">
+                            <span class="badge type">효율중시형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S019">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 전체 해지 대신 서비스 최적화를 제안한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>미사용 기능 파악</li><li>핵심 기능 분리</li><li>최적화 제안</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 사용하지 않는 기능이 많다면 전체 해지보다 필요한 기능만 남기는 방식이 더 효율적일 수 있습니다. 현재 실제로 쓰시는 기능과 불필요한 기능을 구분해서 조정안을 안내드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>서비스 다이어트</li><li>기능 재설계</li><li>필수 보안만 유지</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>불필요 기능을 억지로 방어하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S020')">
+                        <span>[고객센터 불만] 상담 경험이 나빠 해지 요청</span>
+                        <div class="script-badges">
+                            <span class="badge type">감정형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S020">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 감정 회복 후 실질 해결로 연결한다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>상담 불편 사과</li><li>다시 설명할 기회 요청</li><li>전담 창구 제안</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 상담 과정에서 불편을 느끼셨다면 정말 죄송합니다. 해지로 결정하시기 전에 제가 내용을 다시 정리해서 불편하셨던 부분이 해결 가능한지 확인해드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>전담 상담</li><li>민원 이력 확인</li><li>재발 방지 안내</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>이전 상담원을 탓하지 않기</li><li>감정 표현을 무시하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="script-card">
+                    <div class="script-header" onclick="toggleScript('S021')">
+                        <span>[보안/혜택 강화] 유지를 조건으로 실질적인 혜택이나 장비 업그레이드를 원함</span>
+                        <div class="script-badges">
+                            <span class="badge type">보상심리형</span>
+                        </div>
+                    </div>
+                    <div class="script-content" id="content-S021">
+                        <div style="margin-bottom: 10px;"><b>🎯 방어 목표:</b> 비용 부담 없이 체감할 수 있는 보안 강화 옵션을 제안하여 유지를 이끌어낸다.</div>
+                        <div><b>📋 핵심 전략:</b></div>
+                        <ul>
+                            <li>안심통보 서비스의 실질적 가치를 강조한다</li><li>열센서, 자석센서 등 고객 환경에 맞는 추가 장비를 제안한다</li><li>유지 시 제공되는 프리미엄 케어를 어필한다</li>
+                        </ul>
+                        <div class="script-text">
+                            🗣️ "고객님, 오랫동안 이용해주신 데 대한 감사의 의미로 실질적인 혜택을 더해드리겠습니다. 추가 비용 전혀 없이 비상 상황 시 가족이나 점주님께 바로 연락이 가는 '안심통보 서비스'를 무상으로 제공해 드리겠습니다. 또한, 현재 보안이 취약하게 느껴지시는 창문이나 출입구에 '열센서 또는 자석센서' 감지기를 추가로 설치해 드려 안전을 한층 강화해 드리겠습니다."
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <b>🎁 제시 가능 혜택:</b>
+                                <ul>
+                                    <li>안심통보 무상제공</li><li>감지기 추가(열센서, 자석센서) 제안</li><li>보안 취약점 재진단</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <b style="color:#e11d48;">⚠️ 주의 사항:</b>
+                                <ul>
+                                    <li>추가 설치로 인한 약정 변경 여부를 사전에 명확히 안내할 것</li><li>고객 매장 환경에 맞지 않는 불필요한 장비를 무작정 제안하지 않기</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleScript(id) {
+            const content = document.getElementById('content-' + id);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+            } else {
+                content.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
