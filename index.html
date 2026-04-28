@@ -3,26 +3,37 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Policy Standards 2026-04</title>
+    <title>Policy Standards 2026</title>
     <style>
         :root { --accent: #0b2f6b; --green: #31591f; --dark: #1f2937; --muted: #6b7280; --bg: #f6f8fb; }
         * { box-sizing: border-box; }
         body { margin: 0; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif; background: var(--bg); color: var(--dark); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
         .container { background: white; border: 1px solid #e5e7eb; border-radius: 18px; padding: 40px; box-shadow: 0 10px 28px rgba(0,0,0,.06); max-width: 600px; width: 100%; text-align: center; }
-        h1 { font-size: 24px; margin-top: 0; margin-bottom: 10px; color: var(--accent); }
-        p { color: var(--muted); margin-bottom: 30px; }
-        .links { display: flex; flex-direction: column; gap: 16px; }
-        a { display: block; padding: 16px 20px; background: #eef2ff; color: #0b2f6b; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; transition: all 0.2s ease; border: 1px solid #c7d2fe; }
+        h1 { font-size: 26px; margin-top: 0; margin-bottom: 5px; color: var(--accent); }
+        p { color: var(--muted); margin-bottom: 30px; font-size: 15px; }
+        h2 { font-size: 18px; color: var(--dark); margin: 25px 0 15px; text-align: left; padding-bottom: 8px; border-bottom: 2px solid #eef2ff; }
+        .links { display: flex; flex-direction: column; gap: 12px; }
+        a { display: block; padding: 14px 20px; background: #eef2ff; color: #0b2f6b; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; transition: all 0.2s ease; border: 1px solid #c7d2fe; text-align: left; position: relative; }
+        a::after { content: '→'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #0b2f6b; opacity: 0.5; transition: all 0.2s ease; }
         a:hover { background: #0b2f6b; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(11, 47, 107, 0.2); }
+        a:hover::after { color: white; opacity: 1; right: 15px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Policy Standards 2026-04</h1>
+        <h1>Policy Standards 2026</h1>
         <p>Please select a document to view.</p>
+        
+        <h2>April 2026 (HTML)</h2>
         <div class="links">
             <a href="Customer_Promotion_Policy_2026_04.html">Customer Promotion Policy</a>
             <a href="System_Security_Policy_2026_04.html">System Security Policy</a>
+        </div>
+
+        <h2>May 2026 (PDF)</h2>
+        <div class="links">
+            <a href="Customer_Promotion_Policy_2026_05.pdf" target="_blank">Customer Promotion Policy</a>
+            <a href="System_Security_Policy_2026_05.pdf" target="_blank">System Security Policy</a>
         </div>
     </div>
 </body>
