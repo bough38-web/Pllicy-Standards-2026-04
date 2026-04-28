@@ -4,10 +4,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>마케팅본부 업무보고</title>
+    <style>
+        :root { --accent: #0b2f6b; --bg: #f6f8fb; --dark: #1f2937; }
+        body { margin: 0; padding: 0; font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; height: 100vh; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+        header { background: white; padding: 15px 25px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10; }
+        h1 { margin: 0; font-size: 18px; color: var(--accent); font-weight: 800;}
+        .back-btn { padding: 8px 16px; background: #eef2ff; color: #0b2f6b; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; transition: all 0.2s; }
+        .back-btn:hover { background: #0b2f6b; color: white; }
+        .pdf-container { flex: 1; width: 100%; position: relative; background: #525659; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
 <body>
-    <script>
-        window.location.href = "마케팅본부_업무보고_20260414.pdf";
-    </script>
+    <header>
+        <h1>마케팅본부 업무보고</h1>
+        <a href="index.html" class="back-btn">← 목록으로 돌아가기</a>
+    </header>
+    <div class="pdf-container">
+        <iframe src="마케팅본부_업무보고_20260414.pdf#view=FitH"></iframe>
+    </div>
 </body>
 </html>
