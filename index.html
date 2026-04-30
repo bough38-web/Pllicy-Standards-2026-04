@@ -13,17 +13,17 @@
         p { color: var(--muted); margin-bottom: 30px; font-size: 15px; letter-spacing: -0.3px;}
         h2 { font-size: 18px; color: var(--dark); margin: 25px 0 15px; text-align: left; padding-bottom: 8px; border-bottom: 2px solid #eef2ff; letter-spacing: -0.5px;}
         .links { display: flex; flex-direction: column; gap: 12px; }
-        a { display: block; padding: 14px 20px; background: #eef2ff; color: #0b2f6b; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; transition: all 0.2s ease; border: 1px solid #c7d2fe; text-align: left; position: relative; letter-spacing: -0.3px;}
+        a { display: block; padding: 14px 20px; background: #eef2ff; color: #0b2f6b; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; transition: all 0.2s ease; border: 1px solid #c7d2fe; position: relative; text-align: left; }
         a::after { content: '→'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #0b2f6b; opacity: 0.5; transition: all 0.2s ease; }
         a:hover { background: #0b2f6b; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(11, 47, 107, 0.2); }
         a:hover::after { color: white; opacity: 1; right: 15px; }
-        .badge { display: inline-block; background: #0b2f6b; color: white; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; font-weight: normal;}
+        .badge { display: inline-block; background: #0b2f6b; color: white; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; font-weight: normal; }
         #login-container { background: white; border: 1px solid #e5e7eb; border-radius: 18px; padding: 40px; box-shadow: 0 10px 28px rgba(0,0,0,.06); max-width: 400px; width: 100%; text-align: center; }
         #login-container h1 { font-size: 22px; margin-bottom: 10px; }
         #login-container p { margin-bottom: 20px; font-size: 14px; }
-        #login-container input { padding: 12px; border: 1px solid #c7d2fe; border-radius: 8px; width: 100%; font-size: 16px; margin-bottom: 10px; outline: none; box-sizing: border-box; font-family: inherit;}
+        #login-container input { padding: 12px; border: 1px solid #c7d2fe; border-radius: 8px; width: 100%; font-size: 16px; margin-bottom: 15px; outline: none; }
         #login-container input:focus { border-color: #0b2f6b; }
-        #login-container button { padding: 12px; background: #0b2f6b; color: white; border: none; border-radius: 8px; width: 100%; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; font-family: inherit;}
+        #login-container button { padding: 12px; background: #0b2f6b; color: white; border: none; border-radius: 8px; width: 100%; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
         #login-container button:hover { background: #08214a; }
         #error-msg { color: #dc2626; font-size: 13px; margin-bottom: 15px; display: none; margin-top: 0;}
         #main-content { display: none; }
@@ -32,39 +32,39 @@
 <body>
     <div id="login-container">
         <h1>보안 로그인</h1>
-        <p>문서를 열람하려면 암호를 입력하세요.</p>
-        <input type="password" id="pwd" placeholder="암호 입력" />
-        <p id="error-msg">암호가 일치하지 않습니다.</p>
+        <p>액세스를 위해 비밀번호를 입력하세요.</p>
+        <div id="error-msg">비밀번호가 올바르지 않습니다.</div>
+        <input type="password" id="pwd" placeholder="비밀번호 입력" onkeypress="if(event.key === 'Enter') checkPwd()">
         <button onclick="checkPwd()">로그인</button>
     </div>
 
-    <div class="container" id="main-content">
+    <div id="main-content" class="container">
         <h1>2026년 정책기준 안내</h1>
-        <p>열람하실 문서를 선택해 주세요.</p>
-        
-        <h2>현장 교육 및 매뉴얼</h2>
-        <div class="links">
-            <a href="training.html" style="background: #2563eb; color: white; border-color: #1e4ed8;">🛡️ 해지방어 플랫폼 현장 교육 가이드 <span class="badge" style="background: white; color: #2563eb;">BEST</span></a>
-        </div>
+        <p>SKT 본사 및 수도권/지방 자치령 통합 가이드라인</p>
 
-        <h2>4월 정책안내</h2>
         <div class="links">
-            <a href="Customer_Promotion_Policy_2026_04.html">고객부문 프로모션 4월 정책 <span class="badge">웹문서</span></a>
-            <a href="System_Security_Policy_2026_04.html">시스템보안 4월 정책안내 <span class="badge">웹문서</span></a>
-        </div>
+            <h2>4월 정책안내</h2>
+            <div class="links">
+                <a href="Customer_Promotion_Policy_2026_04.html">고객 프로모션 정책 4월 정책 <span class="badge">웹문서</span></a>
+                <a href="System_Security_Policy_2026_04.html">시스템보안 4월 정책안내 <span class="badge">웹문서</span></a>
+                <a href="training.html" style="background: #eef2ff; color: #1e40af; border-color: #bfdbfe;">🛡️ 해지방어 플랫폼 현장 교육 가이드 </a>
+                <a href="oss-report/index.html" style="background: #059669; color: white; border-color: #047857; margin-top: 8px;">📈 OSS 실적집계 가이드 <span class="badge" style="background: white; color: #059669;">NEW</span></a>
+            </div>
 
-        <h2>5월 정책안내</h2>
-        <div class="links">
-            <a href="Customer_Promotion_Policy_2026_05.html">고객부문 프로모션 5월 정책 <span class="badge">웹문서</span></a>
-            <a href="System_Security_Policy_2026_05.html">시스템보안 5월 정책안내 <span class="badge">웹문서</span></a>
-        </div>
+            <h2>5월 정책안내</h2>
+            <div class="links">
+                <a href="Customer_Promotion_Policy_2026_05.html">고객 프로모션 5월 정책 <span class="badge">웹문서</span></a>
+                <a href="System_Security_Policy_2026_05.html">시스템보안 5월 정책안내 <span class="badge">웹문서</span></a>
+            </div>
 
-        <h2>2026년 업무보고 자료</h2>
-        <div class="links">
-            <a href="고객서비스본부_업무보고_20260414.html">고객서비스본부 업무보고 <span class="badge">웹문서</span></a>
-            <a href="마케팅본부_업무보고_20260414.html">마케팅본부 업무보고 <span class="badge">웹문서</span></a>
+            <h2>2026년 업무보고 자료</h2>
+            <div class="links">
+                <a href="고객서비스본부_업무보고_20260414.html">고객서비스본부 업무보고 <span class="badge">웹문서</span></a>
+                <a href="마케팅본부_업무보고_20260414.html">마케팅본부 업무보고 <span class="badge">웹문서</span></a>
+            </div>
         </div>
     </div>
+
     <script>
         function checkPwd() {
             var pwd = document.getElementById('pwd').value;
@@ -75,14 +75,8 @@
                 document.getElementById('error-msg').style.display = 'block';
             }
         }
-        document.getElementById('pwd').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                checkPwd();
-            }
-        });
+
+        checkPwd();
     </script>
-    <div style="position: fixed; bottom: 15px; right: 15px; font-size: 11px; color: rgba(107, 114, 128, 0.6); pointer-events: none; user-select: none; letter-spacing: -0.2px; z-index: 9999;">
-        Copyright © 2026.05 Seeun Papa. All rights reserved. 본 저작물의 무단 전재 및 재배포를 엄격히 금지합니다.
-    </div>
 </body>
 </html>
