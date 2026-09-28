@@ -5,3 +5,4 @@ _src/
 .DS_Store
 # oss-report 이미지는 문서 안에 넣어 함께 암호화한다(평문 이미지 게시 금지)
 oss-report/oss-report/assets/
+__pycache__/
