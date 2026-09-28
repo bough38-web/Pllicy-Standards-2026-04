@@ -13,8 +13,9 @@ _src/ 의 평문 HTML(로컬 전용, 저장소에 올리지 않음)을 비밀번
   python3 tools/encrypt_docs.py            # 비밀번호를 물어본다(화면에 안 보임)
   PP_PASSWORD='...' python3 tools/encrypt_docs.py
 
-새 문서를 추가하려면: _src/ 에 평문 HTML을 넣고, _src/index.html 목차에 링크를 추가한 뒤 다시 실행.
-비밀번호를 바꾸려면: 새 비밀번호로 다시 실행하면 모든 문서가 새 비밀번호로 다시 암호화된다.
+※ 평소 문서 추가·목차 수정·비밀번호 변경은 사이트의 admin.html(관리자 업로드)에서 하면 된다.
+   이 도구는 _src/ 의 평문 원본으로 전체를 다시 만들 때만 쓴다(목차 menu.enc.json은 건드리지 않음).
+   목차와 비밀번호가 어긋나지 않도록, 입력한 비밀번호로 menu.enc.json이 풀리지 않으면 중단한다.
 """
 import base64, getpass, html, os, secrets, sys
 from pathlib import Path
@@ -108,8 +109,20 @@ def main():
         sys.exit(f"비밀번호는 {MIN_LEN}자 이상이어야 합니다(짧은 비밀번호는 암호문을 받아가 무차별 대입으로 풀 수 있음).")
     if "PP_PASSWORD" not in os.environ and getpass.getpass("비밀번호 확인: ") != pw:
         sys.exit("비밀번호가 일치하지 않습니다.")
+    menu = ROOT / "menu.enc.json"
+    if menu.exists():
+        import json
+        E = json.loads(menu.read_text())
+        key = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=base64.b64decode(E["salt"]), iterations=E["it"]).derive(pw.encode())
+        try:
+            AESGCM(key).decrypt(base64.b64decode(E["iv"]), base64.b64decode(E["ct"]), None)
+        except Exception:
+            sys.exit("이 비밀번호로 목차(menu.enc.json)가 풀리지 않습니다 — 사이트 비밀번호와 같아야 합니다. "
+                     "비밀번호를 바꾸려면 admin.html의 '비밀번호 변경'을 쓰세요.")
     n = 0
     for src in sorted(SRC.rglob("*.html")):
+        if src.name in ("index.html", "admin.html"):
+            continue  # 목차·관리자 페이지는 평문 코드(데이터 없음)로 따로 관리
         rel = src.relative_to(SRC)
         body = src.read_bytes()
         m = body.decode("utf-8", "ignore")

@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>정책문서 관리자 업로드</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root { --accent:#0b2f6b; --muted:#6b7280; --bd:#e5e7eb; --bg:#f6f8fb; --red:#dc2626; --grn:#15803d; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif; background:var(--bg); color:#1f2937; }
+  .wrap { max-width:980px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:22px; color:var(--accent); margin:0 0 4px; } .sub { color:var(--muted); font-size:13px; margin:0 0 18px; }
+  .card { background:#fff; border:1px solid var(--bd); border-radius:14px; padding:18px; margin-bottom:16px; box-shadow:0 4px 14px rgba(0,0,0,.04); }
+  .card h2 { font-size:16px; margin:0 0 12px; }
+  label.f { display:block; font-size:12px; color:var(--muted); margin:10px 0 4px; font-weight:700; }
+  input[type=text], input[type=password], select { width:100%; padding:9px 11px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; font-family:inherit; background:#fff; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; } @media (max-width:640px){ .row{grid-template-columns:1fr} }
+  .btn { padding:10px 16px; border-radius:8px; border:1px solid #cbd5e1; background:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .btn.p { background:var(--accent); color:#fff; border-color:var(--accent); } .btn:disabled { opacity:.55; cursor:not-allowed; }
+  .btn.sm { padding:4px 9px; font-size:12px; font-weight:600; }
+  .chk { font-size:13px; margin:8px 0; display:block; cursor:pointer; }
+  .msg { font-size:13px; margin-top:10px; min-height:18px; white-space:pre-line; } .msg.err{color:var(--red)} .msg.ok{color:var(--grn)}
+  .tabs { display:flex; gap:6px; margin-bottom:14px; } .tabs button { flex:1; }
+  .tabs button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .pages { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; margin-top:10px; max-height:560px; overflow-y:auto; padding:2px; }
+  .pg { border:1px solid var(--bd); border-radius:10px; padding:8px; background:#fafafa; }
+  .pg img { width:100%; border-radius:6px; border:1px solid #eee; display:block; margin-bottom:6px; background:#fff; }
+  .pg .n { font-size:11px; color:var(--muted); margin-bottom:4px; }
+  .pg input { font-size:12px; padding:6px 8px; }
+  .sec { border:1px solid var(--bd); border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+  .sec-h { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-weight:700; }
+  .sec-h .t { flex:1; min-width:120px; }
+  .it { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:13px; padding:6px 0; border-top:1px dashed #eee; }
+  .it .t { flex:1; min-width:160px; } .it .h { color:var(--muted); font-size:11px; }
+  .bdg { display:inline-block; font-size:10px; padding:1px 6px; border-radius:4px; background:var(--accent); color:#fff; margin-left:4px; font-weight:400; }
+  .bdg.red{background:var(--red)} .bdg.gray{background:#9ca3af}
+  .hint { font-size:12px; color:var(--muted); line-height:1.6; }
+  code { background:#f1f5f9; padding:1px 5px; border-radius:4px; font-size:12px; }
+  .bar { height:6px; background:#e5e7eb; border-radius:3px; overflow:hidden; margin-top:8px; display:none; } .bar i { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+</style>
+</head>
+<body>
+<!--
+  관리자 업로드 페이지 — 이 파일에는 비밀번호·토큰·문서 내용이 없다(누구나 열 수 있는 코드뿐).
+  동작: PDF → (브라우저 안에서) 페이지 이미지화 → 문서 HTML 생성 → 사이트 비밀번호로 AES-256-GCM 암호화
+        → GitHub API로 저장소에 직접 커밋(문서 + 암호화된 목차 menu.enc.json) → GitHub Pages가 1~2분 뒤 반영.
+  필요: 사이트 비밀번호 + 이 저장소에 쓰기 권한이 있는 GitHub 토큰(Fine-grained, Contents: Read and write).
+  암호화 형식은 tools/encrypt_docs.py 와 동일(PBKDF2-SHA256 600,000회 → AES-256-GCM).
+-->
+<div class="wrap">
+  <h1>⚙ 정책문서 관리자 업로드</h1>
+  <p class="sub">PDF를 올리면 암호화해서 바로 게시합니다 · <a href="index.html">← 목차로</a></p>
+
+  <div class="card" id="loginCard">
+    <h2>🔐 관리자 인증</h2>
+    <label class="f">사이트 비밀번호 (문서 열람 비밀번호와 동일)</label>
+    <input type="password" id="pw" autocomplete="current-password">
+    <label class="f">GitHub 토큰 (이 저장소 쓰기 권한)</label>
+    <input type="password" id="tok" placeholder="github_pat_..." autocomplete="off">
+    <label class="chk"><input type="checkbox" id="keepTok"> 이 기기에 토큰 기억 (공용 PC에서는 체크하지 마세요)</label>
+    <button class="btn p" id="loginBtn">로그인</button>
+    <div class="msg" id="loginMsg"></div>
+    <details style="margin-top:12px"><summary class="hint" style="cursor:pointer">GitHub 토큰 만드는 방법</summary>
+      <div class="hint" style="margin-top:6px">
+        1. <b>bough38-web</b> 계정으로 GitHub 로그인 → <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Fine-grained token 만들기</a><br>
+        2. Token name: <code>정책문서 업로드</code>, Expiration: 원하는 기간(예: 90일)<br>
+        3. Repository access: <b>Only select repositories</b> → <code>Pllicy-Standards-2026-04</code><br>
+        4. Permissions → Repository permissions → <b>Contents: Read and write</b><br>
+        5. Generate token → 나온 <code>github_pat_…</code> 값을 위 칸에 붙여넣기
+      </div></details>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="tabs"><button class="btn on" data-tab="up">📄 문서 업로드</button><button class="btn" data-tab="menu">🗂 목차 관리</button><button class="btn" data-tab="pw">🔑 비밀번호 변경</button></div>
+
+    <!-- 업로드 -->
+    <div id="tab-up">
+      <div class="card">
+        <h2>1. PDF 선택</h2>
+        <input type="file" id="pdf" accept="application/pdf,.pdf">
+        <div class="hint" style="margin-top:6px">DRM(문서보안)이 걸린 파일은 열리지 않습니다 — 회사 문서보안 뷰어에서 <b>인쇄 → Microsoft Print to PDF</b>로 저장한 파일을 올리세요.</div>
+        <div class="bar" id="renderBar"><i></i></div>
+        <div class="msg" id="pdfMsg"></div>
+      </div>
+      <div class="card" id="metaCard" style="display:none">
+        <h2>2. 문서 정보</h2>
+        <div class="row">
+          <div><label class="f">문서 제목 (목차·문서 상단에 표시)</label><input type="text" id="docTitle"></div>
+          <div><label class="f">파일 이름 (영문 권장, .html)</label><input type="text" id="docFile"></div>
+        </div>
+        <div class="row">
+          <div><label class="f">목차 섹션</label><select id="secSel"></select></div>
+          <div id="newSecWrap" style="display:none"><label class="f">새 섹션 이름</label><input type="text" id="newSec" placeholder="예: 11월 정책안내"></div>
+        </div>
+        <label class="f">'준비 중' 항목 대체</label><select id="replaceSel"></select>
+        <label class="chk"><input type="checkbox" id="optNew" checked> <b>NEW</b> 표시 (다른 문서의 NEW 표시는 해제)</label>
+        <label class="chk"><input type="checkbox" id="optRecent" checked> 이 섹션을 <b>최근 업데이트</b>로 표시하고 목차 위쪽으로 이동</label>
+        <h2 style="margin-top:16px">3. 페이지별 제목 <span class="hint" style="font-weight:400">— 제목을 입력한 페이지만 문서 상단 이동 메뉴에 표시됩니다</span></h2>
+        <div class="pages" id="pages"></div>
+        <div style="margin-top:14px"><button class="btn p" id="pubBtn">🔒 암호화해서 게시</button></div>
+        <div class="bar" id="pubBar"><i></i></div>
+        <div class="msg" id="pubMsg"></div>
+      </div>
+    </div>
+
+    <!-- 목차 관리 -->
+    <div id="tab-menu" style="display:none">
+      <div class="card">
+        <h2>목차 편집</h2>
+        <div class="hint">순서 이동·삭제·NEW/최근 업데이트 표시·'준비 중' 항목 추가를 한 뒤 <b>목차 저장</b>을 누르세요. (문서 파일 자체는 지우지 않고 목차에서만 뺍니다)</div>
+        <div id="menuEd" style="margin-top:12px"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn sm" id="addSec">+ 섹션 추가</button>
+          <button class="btn p" id="saveMenu">💾 목차 저장</button>
+        </div>
+        <div class="msg" id="menuMsg"></div>
+      </div>
+    </div>
+
+    <!-- 비밀번호 변경 -->
+    <div id="tab-pw" style="display:none">
+      <div class="card">
+        <h2>🔑 사이트 비밀번호 변경</h2>
+        <div class="hint">모든 문서와 목차를 새 비밀번호로 다시 암호화해 한 번에 게시합니다. 문서가 많으면 몇 분 걸립니다. 다른 앱과 같은 비밀번호는 피하세요.</div>
+        <div class="row"><div><label class="f">새 비밀번호 (10자 이상)</label><input type="password" id="npw1"></div><div><label class="f">새 비밀번호 확인</label><input type="password" id="npw2"></div></div>
+        <div style="margin-top:12px"><button class="btn p" id="chgBtn">🔁 전체 재암호화 후 게시</button></div>
+        <div class="bar" id="chgBar"><i></i></div>
+        <div class="msg" id="chgMsg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const OWNER='bough38-web', REPO='Pllicy-Standards-2026-04', BRANCH='main', MENU='menu.enc.json', IT=600000;
+const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
+const DOC_STYLE="\n  :root { --nav:#073763; --accent:#0aa38f; --bg:#f5f7fb; --card:#fff; --text:#1f2937; }\n  * { box-sizing:border-box; }\n  html { scroll-behavior:smooth; }\n  body { margin:0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif; background:var(--bg); color:var(--text); }\n  header { position:sticky; top:0; z-index:10; background:rgba(255,255,255,.95); border-bottom:1px solid #dfe5ef; backdrop-filter:blur(8px); }\n  .wrap { max-width:1180px; margin:0 auto; padding:18px; }\n  .title { display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }\n  h1 { margin:0; font-size:24px; letter-spacing:-.03em; }\n  .badge { background:var(--nav); color:white; border-radius:999px; padding:8px 12px; font-size:13px; }\n  nav { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px; margin-top:14px; max-height:38vh; overflow:auto; padding-right:4px; }\n  .navbtn { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:10px 12px; border:1px solid #d7dde8; border-radius:12px; background:white; color:var(--text); text-decoration:none; font-size:14px; font-weight:700; box-shadow:0 1px 2px rgba(0,0,0,.04); }\n  .navbtn:hover { border-color:var(--accent); color:#006b5e; transform:translateY(-1px); }\n  .navbtn span { color:#64748b; font-size:12px; white-space:nowrap; }\n  main { max-width:1180px; margin:0 auto; padding:18px; }\n  .page { margin:0 0 28px; background:var(--card); border:1px solid #dfe5ef; border-radius:18px; padding:14px; box-shadow:0 8px 24px rgba(15,23,42,.06); scroll-margin-top:210px; }\n  .page-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:0 0 10px; }\n  .page-head h2 { margin:0; font-size:18px; letter-spacing:-.02em; }\n  .page-head a { color:#64748b; text-decoration:none; font-size:13px; }\n  .page img { width:100%; height:auto; display:block; border-radius:10px; background:white; }\n  @media print { header { position:static; } nav, .page-head a { display:none; } body { background:white; } .page { break-after:page; border:0; box-shadow:none; padding:0; } }\n\n";
+let PW='', TOKEN='', MENU_OBJ=null, PAGES=[], PDF_NAME='';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function msg(id,t,cls){const e=$(id);e.textContent=t||'';e.className='msg'+(cls?' '+cls:'');}
+function bar(id,r){const e=$(id);e.style.display=r==null?'none':'block';if(r!=null)e.firstElementChild.style.width=Math.round(r*100)+'%';}
+
+// ── 암호화 (tools/encrypt_docs.py 와 같은 형식) ──
+function b64d(s){const r=atob(s),n=r.length,u=new Uint8Array(n);for(let i=0;i<n;i++)u[i]=r.charCodeAt(i);return u;}
+function b64e(u){let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s);}
+async function keyFor(pw,salt,usage){
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:IT,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,[usage]);
+}
+async function encrypt(text,pw){
+  const salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await keyFor(pw,salt,'encrypt'),new TextEncoder().encode(text)));
+  return {v:1,it:IT,salt:b64e(salt),iv:b64e(iv),ct:b64e(ct)};
+}
+async function decrypt(E,pw){
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(E.iv)},await keyFor(pw,b64d(E.salt),'decrypt'),b64d(E.ct));
+  return new TextDecoder().decode(pt);
+}
+function lockPage(title,E){
+  const t=esc(title);
+  return `<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>${t}</title>
+<style>
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f6f8fb;
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1f2937}
+  .box{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:36px 28px;box-shadow:0 10px 28px rgba(0,0,0,.06);max-width:400px;width:100%;text-align:center}
+  h1{font-size:20px;margin:0 0 6px;color:#0b2f6b} p{color:#6b7280;font-size:13px;margin:0 0 18px}
+  input[type=password]{padding:12px;border:1px solid #c7d2fe;border-radius:8px;width:100%;font-size:16px;box-sizing:border-box;outline:none;font-family:inherit}
+  input[type=password]:focus{border-color:#0b2f6b}
+  label{display:block;text-align:left;font-size:12px;color:#6b7280;margin:10px 0 14px;cursor:pointer}
+  button{padding:12px;background:#0b2f6b;color:#fff;border:none;border-radius:8px;width:100%;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+  button:disabled{opacity:.6;cursor:wait}
+  #err{color:#dc2626;font-size:13px;min-height:18px;margin:8px 0 0}
+</style>
+</head>
+<body>
+<div class="box" id="box" style="display:none">
+  <h1>🔒 보안 문서</h1>
+  <p>${t}<br>열람하려면 비밀번호를 입력하세요.</p>
+  <form id="f"><input type="password" id="pw" placeholder="비밀번호" autocomplete="current-password" autofocus>
+  <label><input type="checkbox" id="keep"> 이 기기에서 비밀번호 기억</label>
+  <button id="btn">열기</button></form>
+  <div id="err"></div>
+</div>
+<script id="enc" type="application/json">${JSON.stringify(E)}<\/script>
+<script>
+(function(){
+  var E=JSON.parse(document.getElementById('enc').textContent);
+  function b(s){var r=atob(s),n=r.length,u=new Uint8Array(n);for(var i=0;i<n;i++)u[i]=r.charCodeAt(i);return u;}
+  function get(k){try{return sessionStorage.getItem(k)||localStorage.getItem(k);}catch(e){return null;}}
+  async function open(pw){
+    var km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+    var key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b(E.salt),iterations:E.it,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+    var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b(E.iv)},key,b(E.ct));
+    return new TextDecoder().decode(pt);
+  }
+  function show(h){document.open();document.write(h);document.close();
+    if(location.hash){var id=location.hash;setTimeout(function(){var el=document.querySelector(id);if(el)el.scrollIntoView();},50);}}
+  var saved=get('pp_pw');
+  (saved?open(saved):Promise.reject()).then(show).catch(function(){
+    document.getElementById('box').style.display='';
+    var f=document.getElementById('f'),btn=document.getElementById('btn'),err=document.getElementById('err');
+    f.onsubmit=function(ev){ev.preventDefault();var pw=document.getElementById('pw').value;if(!pw)return;
+      btn.disabled=true;btn.textContent='확인 중…';err.textContent='';
+      open(pw).then(function(h){
+        try{sessionStorage.setItem('pp_pw',pw);if(document.getElementById('keep').checked)localStorage.setItem('pp_pw',pw);}catch(e){}
+        show(h);
+      }).catch(function(){err.textContent='비밀번호가 일치하지 않습니다.';btn.disabled=false;btn.textContent='열기';});
+    };
+  });
+})();
+<\/script>
+</body>
+</html>
+`;
+}
+function parseLock(html){
+  const m=html.match(/<script id="enc" type="application\/json">([\s\S]*?)<\/script>/);
+  const t=html.match(/<title>([\s\S]*?)<\/title>/);
+  if(!m) return null;
+  const ta=document.createElement('textarea'); ta.innerHTML=t?t[1]:'';
+  return {E:JSON.parse(m[1]), title:ta.value};
+}
+
+// ── GitHub API ──
+async function gh(path,opt={}){
+  const r=await fetch(path.startsWith('http')?path:API+path,{...opt,headers:{Authorization:'Bearer '+TOKEN,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(opt.headers||{})}});
+  if(!r.ok){let t='';try{t=(await r.json()).message}catch(e){} throw new Error(`GitHub ${r.status}${t?': '+t:''}`);}
+  return r;
+}
+async function readRaw(path){
+  const r=await gh('/contents/'+encodeURIComponent(path).replace(/%2F/g,'/')+'?ref='+BRANCH,{headers:{Accept:'application/vnd.github.raw'},cache:'no-store'});
+  return r.text();
+}
+// 여러 파일을 커밋 하나로 (Git Data API)
+async function commitFiles(files,message,onProgress){
+  const ref=await (await gh(`/git/ref/heads/${BRANCH}`,{cache:'no-store'})).json();
+  const base=await (await gh(`/git/commits/${ref.object.sha}`)).json();
+  const tree=[];
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    const blob=await (await gh('/git/blobs',{method:'POST',body:JSON.stringify({content:f.content,encoding:'utf-8'})})).json();
+    tree.push({path:f.path,mode:'100644',type:'blob',sha:blob.sha});
+    onProgress&&onProgress((i+1)/(files.length+2));
+  }
+  const nt=await (await gh('/git/trees',{method:'POST',body:JSON.stringify({base_tree:base.tree.sha,tree})})).json();
+  const nc=await (await gh('/git/commits',{method:'POST',body:JSON.stringify({message,tree:nt.sha,parents:[ref.object.sha]})})).json();
+  onProgress&&onProgress((files.length+1)/(files.length+2));
+  await gh(`/git/refs/heads/${BRANCH}`,{method:'PATCH',body:JSON.stringify({sha:nc.sha})});
+  onProgress&&onProgress(1);
+  return nc.sha;
+}
+
+// ── 로그인 ──
+try{ $('tok').value=localStorage.getItem('pp_admin_tok')||''; $('keepTok').checked=!!$('tok').value; }catch(e){}
+$('loginBtn').onclick=async()=>{
+  PW=$('pw').value; TOKEN=$('tok').value.trim();
+  if(!PW||!TOKEN){msg('loginMsg','비밀번호와 토큰을 모두 입력하세요.','err');return;}
+  $('loginBtn').disabled=true; msg('loginMsg','확인 중…');
+  try{
+    const repo=await (await gh('')).json();
+    if(!repo.permissions||!repo.permissions.push) throw new Error('이 토큰에는 저장소 쓰기 권한이 없습니다(Contents: Read and write 필요).');
+    const E=JSON.parse(await readRaw(MENU));
+    try{ MENU_OBJ=JSON.parse(await decrypt(E,PW)); }catch(e){ throw new Error('사이트 비밀번호가 일치하지 않습니다.'); }
+    try{ if($('keepTok').checked) localStorage.setItem('pp_admin_tok',TOKEN); else localStorage.removeItem('pp_admin_tok'); sessionStorage.setItem('pp_pw',PW);}catch(e){}
+    $('loginCard').style.display='none'; $('app').style.display='';
+    fillSections(); renderMenuEd();
+  }catch(e){ msg('loginMsg',e.message,'err'); }
+  $('loginBtn').disabled=false;
+};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  ['up','menu','pw'].forEach(k=>$('tab-'+k).style.display=b.dataset.tab===k?'':'none');
+  if(b.dataset.tab==='menu') renderMenuEd();
+});
+
+// ── PDF → 페이지 이미지 ──
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+$('pdf').onchange=async e=>{
+  const file=e.target.files[0]; if(!file) return;
+  PAGES=[]; $('metaCard').style.display='none'; msg('pdfMsg','');
+  const buf=new Uint8Array(await file.arrayBuffer());
+  const head=new TextDecoder('latin1').decode(buf.subarray(0,8));
+  if(head.startsWith('SCDSA')){ msg('pdfMsg','❌ DRM(SoftCamp 문서보안)이 걸린 파일입니다. 회사 문서보안 뷰어에서 "인쇄 → Microsoft Print to PDF"로 저장한 파일을 올려주세요.','err'); return; }
+  if(!head.startsWith('%PDF')){ msg('pdfMsg','❌ PDF 파일이 아닙니다.','err'); return; }
+  try{
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    for(let i=1;i<=pdf.numPages;i++){
+      msg('pdfMsg',`페이지 변환 중… ${i}/${pdf.numPages}`); bar('renderBar',i/pdf.numPages);
+      const page=await pdf.getPage(i);
+      const v1=page.getViewport({scale:1}); const scale=Math.min(3,1800/v1.width);
+      const vp=page.getViewport({scale}); const c=document.createElement('canvas');
+      c.width=Math.round(vp.width); c.height=Math.round(vp.height);
+      const ctx=c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+      await page.render({canvasContext:ctx,viewport:vp}).promise;
+      let txt=''; try{ txt=(await page.getTextContent()).items.map(t=>t.str).join(' ').replace(/\s+/g,' ').trim(); }catch(_){}
+      PAGES.push({img:c.toDataURL('image/jpeg',0.85), title:'', hint:txt.slice(0,60)});
+      c.width=c.height=0;
+    }
+    bar('renderBar',null);
+    PDF_NAME=file.name.replace(/\.pdf$/i,'');
+    guessMeta(PDF_NAME);
+    renderPages();
+    $('metaCard').style.display='';
+    msg('pdfMsg',`✅ ${pdf.numPages}페이지 변환 완료 — 아래에서 제목·목차 위치를 확인하고 게시하세요.`,'ok');
+  }catch(err){ bar('renderBar',null); msg('pdfMsg','❌ PDF를 읽지 못했습니다: '+err.message,'err'); }
+};
+function guessMeta(name){
+  const mm=name.match(/(\d{1,2})\s*월/); const mon=mm?+mm[1]:(new Date().getMonth()+1);
+  const yy=(name.match(/(?:20)?(2\d)\s*년|^(2\d)\./)||[]); const year=2000+(+(yy[1]||yy[2]||String(new Date().getFullYear()).slice(2)));
+  const isSec=/시스템\s*보안|security/i.test(name), isPromo=/프로모션|promotion/i.test(name);
+  $('docTitle').value=isSec?`시스템보안 ${mon}월 정책안내`:isPromo?`고객부문 프로모션 ${mon}월 정책`:name.replace(/_F\.*$|[._-]+$/,'');
+  $('docFile').value=isSec?`System_Security_Policy_${year}_${String(mon).padStart(2,'0')}.html`:isPromo?`Customer_Promotion_Policy_${year}_${String(mon).padStart(2,'0')}.html`:`Doc_${year}_${String(mon).padStart(2,'0')}_${Date.now().toString(36)}.html`;
+  const want=`${mon}월 정책안내`; const si=MENU_OBJ.sections.findIndex(s=>s.title===want);
+  $('secSel').value=si>=0?String(si):'new'; $('newSec').value=si>=0?'':want; $('newSecWrap').style.display=si>=0?'none':'';
+  fillReplace(); // 같은 제목의 '준비 중' 항목이 있으면 자동 선택
+  const opt=[...$('replaceSel').options].find(o=>o.dataset.title===$('docTitle').value);
+  if(opt) $('replaceSel').value=opt.value;
+}
+function renderPages(){
+  $('pages').innerHTML=PAGES.map((p,i)=>`<div class="pg"><div class="n">${i+1}페이지${p.hint?' · '+esc(p.hint):''}</div><img src="${p.img}" alt="${i+1}페이지"><input type="text" data-i="${i}" placeholder="${i===0?'예: 표지':'제목 (비우면 메뉴에 안 나옴)'}" value="${esc(p.title)}"></div>`).join('');
+  $('pages').querySelectorAll('input').forEach(inp=>inp.oninput=()=>{PAGES[+inp.dataset.i].title=inp.value.trim();});
+}
+function fillSections(){
+  $('secSel').innerHTML=MENU_OBJ.sections.map((s,i)=>`<option value="${i}">${esc(s.title)}</option>`).join('')+'<option value="new">+ 새 섹션 만들기</option>';
+  $('secSel').onchange=()=>{ $('newSecWrap').style.display=$('secSel').value==='new'?'':'none'; fillReplace(); };
+  fillReplace();
+}
+function fillReplace(){
+  const opts=['<option value="">(대체 안 함 — 새 항목으로 추가)</option>'];
+  MENU_OBJ.sections.forEach((s,si)=>s.items.forEach((it,ii)=>{ if(it.pending||!it.href) opts.push(`<option value="${si}:${ii}" data-title="${esc(it.title)}">${esc(s.title)} › ${esc(it.title)} (준비 중)</option>`); }));
+  $('replaceSel').innerHTML=opts.join('');
+}
+function buildDocHtml(title){
+  const navs=[],secs=[];
+  PAGES.forEach((p,i)=>{
+    const n=i+1, h=p.title||`${n}페이지`;
+    if(p.title) navs.push(`<a class="navbtn" href="#page-${n}">${esc(p.title)} <span>${n}p</span></a>`);
+    secs.push(`<section class="page" id="page-${n}">\n  <div class="page-head"><h2>${esc(h)}</h2><a href="#top">맨 위로</a></div>\n  <img src="${p.img}" alt="${esc(title)} ${n}페이지" loading="lazy" />\n</section>`);
+  });
+  return `<!doctype html>\n<html lang="ko">\n<head>\n<meta charset="utf-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1" />\n<title>${esc(title)}</title>\n<style>${DOC_STYLE}</style>\n</head>\n<body id="top">\n<header>\n  <div class="wrap">\n    <div class="title"><h1>${esc(title)}</h1><div class="badge">분야별 선택 · 원본 페이지 유지</div></div>\n    <nav aria-label="분야별 이동 메뉴">${navs.join('\n')}</nav>\n  </div>\n</header>\n<main>\n${secs.join('')}\n</main>\n</body>\n</html>\n`;
+}
+function markRecent(si){
+  MENU_OBJ.sections.forEach((s,i)=>{ if(i!==si && s.badge==='최근 업데이트') s.badge=''; });
+  MENU_OBJ.sections[si].badge='최근 업데이트';
+  const sec=MENU_OBJ.sections.splice(si,1)[0];
+  const top=MENU_OBJ.sections.length && MENU_OBJ.sections[0].items.some(it=>it.style==='best') ? 1 : 0; // 교육 가이드(BEST) 섹션 바로 아래
+  MENU_OBJ.sections.splice(top,0,sec);
+}
+$('pubBtn').onclick=async()=>{
+  const title=$('docTitle').value.trim(), file=$('docFile').value.trim();
+  if(!PAGES.length){msg('pubMsg','PDF를 먼저 선택하세요.','err');return;}
+  if(!title){msg('pubMsg','문서 제목을 입력하세요.','err');return;}
+  if(!/^[\w가-힣().\-]+\.html$/.test(file) || /^(index|admin)\.html$/i.test(file)){msg('pubMsg','파일 이름은 영문/숫자/한글/_-.만, .html로 끝나야 합니다(index·admin 불가).','err');return;}
+  let si=$('secSel').value;
+  if(si==='new' && !$('newSec').value.trim()){msg('pubMsg','새 섹션 이름을 입력하세요.','err');return;}
+  const exists=MENU_OBJ.sections.some(s=>s.items.some(it=>it.href===file));
+  if(exists && !confirm(`"${file}"은(는) 이미 목차에 있는 문서입니다. 새 PDF로 교체할까요?`)) return;
+  $('pubBtn').disabled=true; bar('pubBar',0.02);
+  try{
+    msg('pubMsg','문서 암호화 중…');
+    const docLock=lockPage(title, await encrypt(buildDocHtml(title),PW));
+    // 목차 갱신 (실패 시 되돌리기 위해 사본에서 작업)
+    const backup=JSON.stringify(MENU_OBJ);
+    if(si==='new'){ MENU_OBJ.sections.push({title:$('newSec').value.trim(),badge:'',items:[]}); si=MENU_OBJ.sections.length-1; } else si=+si;
+    if($('optNew').checked) MENU_OBJ.sections.forEach(s=>s.items.forEach(it=>{ it.badges=(it.badges||[]).filter(b=>b!=='NEW'); }));
+    const item={title,href:file,badges:['웹문서'].concat($('optNew').checked?['NEW']:[])};
+    MENU_OBJ.sections.forEach(s=>{ s.items=s.items.filter(it=>it.href!==file); }); // 같은 파일 중복 제거(교체)
+    const rep=$('replaceSel').value;
+    if(rep){ const [a,b]=rep.split(':').map(Number); MENU_OBJ.sections[a].items[b]=item; si=a; }
+    else MENU_OBJ.sections[si].items.push(item);
+    if($('optRecent').checked) markRecent(si);
+    const menuEnc=JSON.stringify(await encrypt(JSON.stringify(MENU_OBJ,null,1),PW));
+    msg('pubMsg','GitHub에 저장 중… (용량이 크면 1분 이상 걸릴 수 있습니다)');
+    try{
+      await commitFiles([{path:file,content:docLock},{path:MENU,content:menuEnc}], `문서 게시: ${title} (관리자 업로드)`, r=>bar('pubBar',0.1+r*0.9));
+    }catch(e){ MENU_OBJ=JSON.parse(backup); throw e; }
+    bar('pubBar',null); fillSections(); renderMenuEd();
+    msg('pubMsg',`✅ 게시 완료: ${title}\n1~2분 뒤 사이트에 반영됩니다 → index.html 새로고침`,'ok');
+  }catch(e){ bar('pubBar',null); msg('pubMsg','❌ 게시 실패: '+e.message,'err'); }
+  $('pubBtn').disabled=false;
+};
+
+// ── 목차 관리 ──
+function renderMenuEd(){
+  if(!MENU_OBJ) return;
+  const S=MENU_OBJ.sections;
+  $('menuEd').innerHTML=S.map((s,si)=>`<div class="sec">
+    <div class="sec-h"><span class="t">${esc(s.title)}${s.badge?`<span class="bdg red">${esc(s.badge)}</span>`:''}</span>
+      <button class="btn sm" data-a="up" data-s="${si}" ${si?'':'disabled'}>▲</button><button class="btn sm" data-a="down" data-s="${si}" ${si<S.length-1?'':'disabled'}>▼</button>
+      <button class="btn sm" data-a="recent" data-s="${si}">${s.badge==='최근 업데이트'?'최근표시 해제':'최근 업데이트'}</button>
+      <button class="btn sm" data-a="pend" data-s="${si}">+ 준비 중 항목</button>
+      <button class="btn sm" data-a="delsec" data-s="${si}">섹션 삭제</button></div>
+    ${s.items.map((it,ii)=>`<div class="it"><span class="t">${esc(it.title)}${(it.badges||[]).map(b=>`<span class="bdg ${b==='NEW'?'red':''}">${esc(b)}</span>`).join('')}${it.pending||!it.href?'<span class="bdg gray">준비 중</span>':''} <span class="h">${esc(it.href||'')}</span></span>
+      <button class="btn sm" data-a="iup" data-s="${si}" data-i="${ii}" ${ii?'':'disabled'}>▲</button>
+      ${it.href?`<button class="btn sm" data-a="new" data-s="${si}" data-i="${ii}">${(it.badges||[]).includes('NEW')?'NEW 해제':'NEW'}</button>`:''}
+      <button class="btn sm" data-a="del" data-s="${si}" data-i="${ii}">목차에서 빼기</button></div>`).join('')||'<div class="hint">항목 없음</div>'}
+  </div>`).join('');
+  $('menuEd').querySelectorAll('button').forEach(bt=>bt.onclick=()=>{
+    const si=+bt.dataset.s, ii=+bt.dataset.i, a=bt.dataset.a, s=S[si];
+    if(a==='up'){S.splice(si-1,0,S.splice(si,1)[0]);}
+    if(a==='down'){S.splice(si+1,0,S.splice(si,1)[0]);}
+    if(a==='recent'){ if(s.badge==='최근 업데이트') s.badge=''; else markRecent(si); }
+    if(a==='pend'){ const t=prompt('준비 중으로 표시할 문서 제목','예: 시스템보안 11월 정책안내'); if(t&&t.trim()) s.items.push({title:t.trim(),href:'',badges:[],pending:true}); }
+    if(a==='delsec'){ if(s.items.length && !confirm(`"${s.title}" 섹션과 항목 ${s.items.length}개를 목차에서 뺄까요?`)) return; S.splice(si,1); }
+    if(a==='iup'){ s.items.splice(ii-1,0,s.items.splice(ii,1)[0]); }
+    if(a==='new'){ const it=s.items[ii]; it.badges=it.badges||[]; it.badges=it.badges.includes('NEW')?it.badges.filter(b=>b!=='NEW'):it.badges.concat(['NEW']); }
+    if(a==='del'){ if(!confirm(`"${s.items[ii].title}"을(를) 목차에서 뺄까요?`)) return; s.items.splice(ii,1); }
+    renderMenuEd(); msg('menuMsg','변경됨 — 💾 목차 저장을 눌러야 사이트에 반영됩니다.');
+  });
+}
+$('addSec').onclick=()=>{ const t=prompt('새 섹션 이름','예: 11월 정책안내'); if(t&&t.trim()){ MENU_OBJ.sections.push({title:t.trim(),badge:'',items:[]}); renderMenuEd(); } };
+$('saveMenu').onclick=async()=>{
+  $('saveMenu').disabled=true; msg('menuMsg','저장 중…');
+  try{
+    const menuEnc=JSON.stringify(await encrypt(JSON.stringify(MENU_OBJ,null,1),PW));
+    await commitFiles([{path:MENU,content:menuEnc}],'목차 수정 (관리자)');
+    fillSections(); msg('menuMsg','✅ 목차 저장 완료 — 1~2분 뒤 사이트에 반영됩니다.','ok');
+  }catch(e){ msg('menuMsg','❌ 저장 실패: '+e.message,'err'); }
+  $('saveMenu').disabled=false;
+};
+
+// ── 비밀번호 변경: 모든 암호화 문서 + 목차 재암호화 ──
+$('chgBtn').onclick=async()=>{
+  const n1=$('npw1').value, n2=$('npw2').value;
+  if(n1.length<10){msg('chgMsg','새 비밀번호는 10자 이상이어야 합니다.','err');return;}
+  if(n1!==n2){msg('chgMsg','새 비밀번호가 서로 다릅니다.','err');return;}
+  if(!confirm('모든 문서를 새 비밀번호로 다시 암호화해 게시합니다. 진행할까요?')) return;
+  $('chgBtn').disabled=true; bar('chgBar',0.02);
+  try{
+    const ref=await (await gh(`/git/ref/heads/${BRANCH}`,{cache:'no-store'})).json();
+    const tree=await (await gh(`/git/trees/${ref.object.sha}?recursive=1`)).json();
+    const htmls=tree.tree.filter(t=>t.type==='blob'&&/\.html$/.test(t.path)&&!/^(index|admin)\.html$/.test(t.path));
+    const out=[];
+    for(let i=0;i<htmls.length;i++){
+      msg('chgMsg',`재암호화 중… ${i+1}/${htmls.length} ${htmls[i].path}`); bar('chgBar',0.05+0.6*i/htmls.length);
+      const lk=parseLock(await readRaw(htmls[i].path)); if(!lk) continue; // 잠금 페이지가 아닌 파일은 건너뜀
+      let plain; try{ plain=await decrypt(lk.E,PW); }catch(e){ throw new Error(`${htmls[i].path}: 현재 비밀번호로 풀리지 않습니다`); }
+      out.push({path:htmls[i].path, content:lockPage(lk.title, await encrypt(plain,n1))});
+    }
+    out.push({path:MENU, content:JSON.stringify(await encrypt(JSON.stringify(MENU_OBJ,null,1),n1))});
+    msg('chgMsg','GitHub에 저장 중…');
+    await commitFiles(out,'사이트 비밀번호 변경(전체 재암호화, 관리자)',r=>bar('chgBar',0.65+r*0.35));
+    PW=n1; try{ sessionStorage.setItem('pp_pw',n1); localStorage.removeItem('pp_pw'); }catch(e){}
+    bar('chgBar',null); msg('chgMsg',`✅ ${out.length-1}개 문서 + 목차를 새 비밀번호로 게시했습니다. 1~2분 뒤 반영됩니다.\n기존에 "기억"해 둔 기기는 새 비밀번호를 다시 입력해야 합니다.`,'ok');
+  }catch(e){ bar('chgBar',null); msg('chgMsg','❌ 실패(아무것도 바뀌지 않았습니다): '+e.message,'err'); }
+  $('chgBtn').disabled=false;
+};
+})();
+</script>
+</body>
+</html>
