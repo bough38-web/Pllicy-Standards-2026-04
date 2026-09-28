@@ -1,0 +1,7 @@
+# 평문 원본(암호화 전) — 절대 올리지 않는다. tools/encrypt_docs.py 가 여기서 읽어 루트에 암호화본을 쓴다.
+_src/
+# 원본 PDF(평문) — 웹에는 암호화된 HTML만 게시
+*.pdf
+.DS_Store
+# oss-report 이미지는 문서 안에 넣어 함께 암호화한다(평문 이미지 게시 금지)
+oss-report/oss-report/assets/
